@@ -14,7 +14,13 @@ def home(request):
     recentBuild = Build.objects.filter(accepted=True).last()
     images = getRandomImages()
 
-    mapLink = "https://dynmap.theminecraftcult.com/"
+    mapLink = "Offline"
+    try:
+        if requests.head("https://dynmap.theminecraftcult.com/", timeout=1).status_code == 200:
+            mapLink = "https://dynmap.theminecraftcult.com/"
+    except:
+            mapLink = "Offline"
+
     
     context = {'recentBuild': recentBuild, 'featuredBuild': featuredBuild, 'images':images, 'mapLink': mapLink}
     return render(request, 'home.html', context=context)
