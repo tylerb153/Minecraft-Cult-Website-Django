@@ -8,6 +8,7 @@ from .forms import BuildForm
 import random
 import requests
 import os
+import json
 
 # Create your views here.
 def showcase(request):
@@ -77,7 +78,7 @@ def createBuild(request):
                 try:
                     webhookURL = os.getenv('DISCORD_WEBHOOK_URL')
                     # print(request.build_absolute_uri(thumbnail.image.url))
-                    json = {
+                    discordJson = {
                         "content": f"{build.creator} just uploaded {build.title}",
                         "embeds": [
                             {
@@ -88,12 +89,12 @@ def createBuild(request):
                             }
                         ]
                     }
-                    response = requests.post(url=webhookURL, json=json)
+                    response = requests.post(url=webhookURL, json=discordJson)
                     if response.status_code != 204:
                         raise Exception(f"Could not send webhook returned {response.status_code} {response.reason}")
                 except Exception as e:
                     try:
-                        json = {
+                        discordJson = {
                             "content": f"{build.creator} just uploaded {build.title}",
                             "embeds": [
                             {
@@ -101,7 +102,7 @@ def createBuild(request):
                             }
                         ]
                         }
-                        requests.post(url=webhookURL, json=json)
+                        requests.post(url=webhookURL, json=discordJson)
                         if response.status_code != 204:
                             raise Exception(f"Could not send webhook returned {response.status_code} {response.reason}")
                     except Exception as e:
